@@ -19,10 +19,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
         password=validated_data["password"]        
         )
         return user
-    def validate(self,data):
-        if data[self.password]!=data[self.password2]:
-            return Response({"error":"passwords arent same"})
-
 class LoginSerializer(serializers.ModelSerializer):
     
     class Meta:

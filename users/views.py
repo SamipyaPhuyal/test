@@ -11,28 +11,20 @@ class UserRegistrationView(APIView):
         print("register")
         serializer=RegistrationSerializer(data=request.data)
         if serializer.is_valid():
-            if User.objects.get(username=serializer.validated_data["username"]):
+            if serializer.validated_data["password"]!=serializer.validated_data["password2"]:
+                return Response({"error" : "passwords arent same"})
+            if User.objects.filter(username=serializer.validated_data["username"]).exists():
                 return Response({"error" : "User already exists"})
             serializer.save()
             return Response(serializer.data,status=201)
         return Response(serializer.errors)
-
-class UserLoginView(APIView):
-    def post(self,request):
-        print("LOGIN")
-        serializer=LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                user=User.objects.get(username=request.data["username"])
-            except:
-                return Response({"error":"invalid details"})
-            if user.check_password(request.data["password"]): 
-                token=RefreshToken.for_user(user)
-                data={
-                    "refresh":str(token),
-                    "access":str(token.access_token)
-                }
-                return Response(data)
-            return Response({"error":"invalid password"})
-        return Response(serializer.errors)                
     
+class LogoutView(APIView):
+    def post(self,request):
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(status=200)
+        except Exception as e:
+            return Response(status=400)
