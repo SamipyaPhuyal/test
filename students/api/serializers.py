@@ -1,5 +1,5 @@
-from rest_framework.serializers import serializers
-from students.views import Student
+from rest_framework import serializers
+from students.models import Student
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
