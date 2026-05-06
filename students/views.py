@@ -25,4 +25,10 @@ class StudentSet(ModelViewSet):
     serializer_class=StudentSerializer
     queryset=Student.objects.all()
     
+class GenericView(generics.ListCreateAPIView):
+   queryset=Student.objects.all()
+   serializer_class=StudentSerializer
+   
+    
+    
     
