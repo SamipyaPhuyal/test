@@ -8,13 +8,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserRegistrationView(APIView):
     def post(self,request):
-        print("register")
         serializer=RegistrationSerializer(data=request.data)
         if serializer.is_valid():
-            if serializer.validated_data["password"]!=serializer.validated_data["password2"]:
-                return Response({"error" : "passwords arent same"})
-            if User.objects.filter(username=serializer.validated_data["username"]).exists():
-                return Response({"error" : "User already exists"})
             serializer.save()
             return Response(serializer.data,status=201)
         return Response(serializer.errors)

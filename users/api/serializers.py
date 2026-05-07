@@ -12,6 +12,16 @@ class RegistrationSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'id': {'read_only': True}
         }
+    
+    def validate(self,attrs):
+        if attrs.get("password")!=attrs.get("password2"):
+            raise serializers.ValidationError("password must match")
+        return attrs
+    def validate_username(self,value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("user already exists")
+        return value
+        
 
     def create(self,validated_data):
         user=User.objects.create_user(
